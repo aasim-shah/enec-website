@@ -111,7 +111,7 @@ import { Language } from "../languages/languages-table";
 
 const serverURL = process.env.NEXT_PUBLIC_BASE_URL;
 
-interface Video {
+export interface Video {
   _id: string;
   title: string;
   description: string;
@@ -124,9 +124,16 @@ interface Video {
 type Props = {
   refresh: boolean;
   setRefresh: (open: boolean | ((prev: boolean) => boolean)) => void;
+  selectVideo: (video: Video) => void;
+  showUpdateDialog: (open: boolean | ((prev: boolean) => boolean)) => void;
 };
 
-export const VideosGrid = ({ refresh, setRefresh }: Props) => {
+export const VideosGrid = ({
+  refresh,
+  setRefresh,
+  selectVideo,
+  showUpdateDialog,
+}: Props) => {
   const { data, error, loading, execute } = useApi(fetchAllVideos);
   const [videos, setVideos] = useState<Video[]>([]);
   const [previewVideo, setPreviewVideo] = useState<string>("");
@@ -233,12 +240,18 @@ export const VideosGrid = ({ refresh, setRefresh }: Props) => {
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem
-                        // onClick={() => navigator.clipboard.writeText(video.id)}
                         onClick={() => handlePlayVideo(video.url)}
                       >
                         Preview
                       </DropdownMenuItem>
-                      {/* <DropdownMenuItem>Edit Video</DropdownMenuItem> */}
+                      <DropdownMenuItem
+                        onClick={() => {
+                          selectVideo(video);
+                          showUpdateDialog(true);
+                        }}
+                      >
+                        Edit Video
+                      </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => {
                           handleDeleteVideo(video._id);

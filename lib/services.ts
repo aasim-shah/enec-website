@@ -15,6 +15,20 @@ export const fetchAllVideos = async (lang: string) => {
     throw error;
   }
 };
+// update video ( updateVideo )
+export const updateVideo = async (data: any) => {
+  try {
+    const response = await request.put(`/api/videos/update`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update video", error);
+    throw error;
+  }
+};
 
 //  pushign
 export const deleteVideo = async (id: string) => {
@@ -36,7 +50,16 @@ export const addLanuage = async (data: any) => {
   }
 };
 
-/// fetch all languages
+export const updateLanguage = async (data: any) => {
+  try {
+    const response = await request.put(`/api/languages/${data.id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update language", error);
+    throw error;
+  }
+};
+
 export const fetchAllLanguages = async () => {
   try {
     const response = await request.get("/api/languages");
@@ -47,7 +70,6 @@ export const fetchAllLanguages = async () => {
   }
 };
 
-// delete language
 export const deleteLanguage = async (id: string) => {
   try {
     const response = await request.delete(`/api/languages/${id}`);
@@ -57,8 +79,6 @@ export const deleteLanguage = async (id: string) => {
     throw error;
   }
 };
-
-// get all stats
 
 export const fetchStats = async () => {
   try {
@@ -76,7 +96,6 @@ export const getUserData = async () => {
       headers: { requiresAuth: true },
     });
 
-    console.log({ response });
     return response.data;
   } catch (error) {
     throw error;

@@ -32,9 +32,16 @@ export interface Language {
 type Props = {
   refresh: boolean;
   setRefresh: (open: boolean | ((prev: boolean) => boolean)) => void;
+  selectLanguage: (language: Language) => void;
+  showUpdateDialog: (open: boolean | ((prev: boolean) => boolean)) => void;
 };
 
-export const LanguagesTable = ({ refresh, setRefresh }: Props) => {
+export const LanguagesTable = ({
+  refresh,
+  setRefresh,
+  selectLanguage,
+  showUpdateDialog,
+}: Props) => {
   const { data, execute } = useApi(fetchAllLanguages);
   const [languages, setLanguages] = useState<Language[]>([]);
 
@@ -88,12 +95,15 @@ export const LanguagesTable = ({ refresh, setRefresh }: Props) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  {/* <DropdownMenuItem
-                    onClick={() => navigator.clipboard.writeText(language._id)}
+                  <DropdownMenuItem
+                    onClick={() => {
+                      showUpdateDialog(true);
+                      selectLanguage(language);
+                    }}
                   >
-                    Copy Language ID
+                    Edit Language
                   </DropdownMenuItem>
-                  <DropdownMenuItem>Edit Language</DropdownMenuItem> */}
+                  {/* <DropdownMenuItem>Edit Language</DropdownMenuItem> */}
                   <DropdownMenuItem
                     onClick={() => handleDelete(language._id)}
                     className="text-destructive"

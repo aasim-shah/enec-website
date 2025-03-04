@@ -46,7 +46,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar
       {...props}
-      collapsible="none"
+      collapsible="icon"
+      variant="sidebar"
       className={`h-screen transition-all duration-300 ease-in-out ${
         isCollapsed ? "w-[70px]" : "w-[240px]"
       } overflow-hidden`}
@@ -87,28 +88,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="m-o p-0">
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem>
-              <div
-                onClick={handleLogout}
-                className="w-full flex space-x-3 cursor-pointer hover:bg-secondary p-2 flex-wrap items-center gap-3 transition-all duration-300 ease-in-out"
-              >
-                <LogOut size={18} className="text-red-500" />
-                <span
-                  className={`transition-opacity duration-300 ${
-                    isCollapsed ? "hidden" : "inline"
-                  }`}
-                >
-                  Logout
-                </span>
+              <div onClick={handleLogout}>
+                <SidebarMenuButton className="space-x-3">
+                  <LogOut className="transition-transform duration-300" />
+                  <span
+                    className={`transition-opacity duration-300 ease-in-out ${
+                      isCollapsed ? "opacity-0" : "opacity-100"
+                    }`}
+                  >
+                    Sign Out
+                  </span>
+                </SidebarMenuButton>
               </div>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarFooter>
-
       <SidebarRail />
     </Sidebar>
   );

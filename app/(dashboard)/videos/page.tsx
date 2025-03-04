@@ -3,12 +3,15 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { VideosGrid } from "@/components/videos/videos-table";
+import { Video, VideosGrid } from "@/components/videos/videos-table";
 import { AddVideoDialog } from "@/components/videos/upload-video";
+import { UpdateVideoDialog } from "@/components/videos/update-video-dialogue";
 
 export default function PostsPage() {
   const [open, setOpen] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [updateVideo, setUpdateVideo] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 
   return (
     <div className="space-y-6">
@@ -19,11 +22,22 @@ export default function PostsPage() {
           Upload New Video
         </Button>
       </div>
-      <VideosGrid refresh={refresh} setRefresh={setRefresh} />
+      <VideosGrid
+        refresh={refresh}
+        setRefresh={setRefresh}
+        selectVideo={setSelectedVideo}
+        showUpdateDialog={setUpdateVideo}
+      />
       <AddVideoDialog
         setRefresh={setRefresh}
         open={open}
         onOpenChange={setOpen}
+      />
+      <UpdateVideoDialog
+        open={Boolean(updateVideo)}
+        onOpenChange={setUpdateVideo}
+        videoData={selectedVideo}
+        setRefresh={setRefresh}
       />
     </div>
   );

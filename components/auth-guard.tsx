@@ -20,8 +20,6 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     const storedToken =
       typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-    console.log({ storedToken });
-
     if (!storedToken) {
       if (pathname !== "/login") {
         router.push(`/login`);

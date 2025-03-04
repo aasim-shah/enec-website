@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -7,15 +8,13 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,30 +22,43 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { use, useEffect } from "react";
 import useApi from "@/hooks/useApi";
-import { addLanuage } from "@/lib/services";
+import { updateLanguage } from "@/lib/services";
 import { toast } from "sonner";
 
+// Define the schema with ID included
 const formSchema = z.object({
+  id: z.string(),
   title: z.string().min(1, "Language name is required"),
   key: z.string().min(2, "Language key must be at least 2 characters").max(5),
   isDefault: z.boolean().default(false),
   isRtl: z.boolean().default(false),
 });
 
-export function AddLanguageDialog({
+// Language interface
+export interface Language {
+  _id: string;
+  title: string;
+  key: string;
+  isDefault: boolean;
+  isRtl: boolean;
+}
+
+export function UpdateLanguageDialog({
   open,
   onOpenChange,
+  language,
   setRefresh,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  language: Language | null;
   setRefresh: (open: boolean | ((prev: boolean) => boolean)) => void;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id: "",
       title: "",
       key: "",
       isDefault: false,
@@ -54,26 +66,37 @@ export function AddLanguageDialog({
     },
   });
 
-  const { data, error, loading, execute } = useApi(addLanuage);
+  useEffect(() => {
+    if (language) {
+      form.reset({
+        id: language._id, // Map `_id` from API to `id`
+        title: language.title,
+        key: language.key,
+        isDefault: language.isDefault,
+        isRtl: language.isRtl,
+      });
+    }
+  }, [language, form.reset]);
+
+  const { data, error, execute } = useApi(updateLanguage);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("Submitting values:", values); // Debugging log
     try {
-      execute(values);
-      form.reset();
+      await execute(values);
       onOpenChange(false);
     } catch (error) {
-      console.error("Failed to create language:", error);
+      console.error("Failed to update language:", error);
     }
   }
 
   useEffect(() => {
     if (data) {
-      console.log("show toast");
-      toast.success("Language created successfully");
+      toast.success("Language updated successfully");
       setRefresh((prev: boolean) => !prev);
     }
     if (error) {
-      toast.error(`Failed to create language: ${error}`);
+      toast.error(`Failed to update language: ${error}`);
     }
   }, [data, error]);
 
@@ -81,7 +104,7 @@ export function AddLanguageDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add New Language</DialogTitle>
+          <DialogTitle>Update Language</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -90,9 +113,9 @@ export function AddLanguageDialog({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Language Name</FormLabel>
+                  <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="English" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -103,9 +126,9 @@ export function AddLanguageDialog({
               name="key"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Language Key</FormLabel>
+                  <FormLabel>Key</FormLabel>
                   <FormControl>
-                    <Input placeholder="en" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -120,9 +143,6 @@ export function AddLanguageDialog({
                     <FormLabel className="text-base">
                       Default Language
                     </FormLabel>
-                    <FormDescription>
-                      Set as the default language
-                    </FormDescription>
                   </div>
                   <FormControl>
                     <Switch
@@ -140,9 +160,6 @@ export function AddLanguageDialog({
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">RTL Support</FormLabel>
-                    <FormDescription>
-                      Enable right-to-left text direction
-                    </FormDescription>
                   </div>
                   <FormControl>
                     <Switch
@@ -154,7 +171,9 @@ export function AddLanguageDialog({
               )}
             />
             <DialogFooter>
-              <Button type="submit">Add Language</Button>
+              <Button type="submit" className="w-full">
+                Update Language
+              </Button>
             </DialogFooter>
           </form>
         </Form>
