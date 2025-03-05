@@ -236,7 +236,7 @@ export function AddVideoDialog({
                   <FormControl>
                     <Input
                       type="file"
-                      accept="*"
+                      accept="video/*"
                       {...field}
                       onChange={(e) => {
                         const file = e.target.files?.[0];
@@ -249,15 +249,13 @@ export function AddVideoDialog({
               )}
             />
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="convertToM3u8"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    {/* <FormLabel className="text-base">
-                      Convert To M3U8 Formate
-                    </FormLabel> */}
+                    
                     <FormDescription>
                       Convert video to m3u8 format
                     </FormDescription>
@@ -270,7 +268,7 @@ export function AddVideoDialog({
                   </FormControl>
                 </FormItem>
               )}
-            />
+            /> */}
 
             {/* {isUploading && <p className="text-sm">Uploading: {progress}%</p>} */}
             <DialogFooter className="flex justify-between  items-center ">
