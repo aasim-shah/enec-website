@@ -138,11 +138,33 @@ export function AddVideoDialog({
     }
   }, [lanuagesList]);
 
+  const VideoProcessingLoader = ({
+    progress,
+    open,
+  }: {
+    progress: number;
+    open: boolean;
+  }) => {
+    if (progress !== 100 || !open) return null;
+
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+          <p className="mt-4 text-white text-sm font-semibold">
+            processing video ...
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[625px] h-[90vh]  overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
         <DialogHeader>
           <DialogTitle className="text-center">Upload New Video </DialogTitle>
+          <VideoProcessingLoader progress={progress} open={open} />
           {/* <DialogDescription>
             Fill in the details and upload a video.
           </DialogDescription> */}
@@ -255,7 +277,6 @@ export function AddVideoDialog({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    
                     <FormDescription>
                       Convert video to m3u8 format
                     </FormDescription>

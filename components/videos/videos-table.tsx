@@ -160,8 +160,18 @@ export const VideosGrid = ({
   }, [data, deleteVideResp, refresh]);
 
   const handlePlayVideo = (url: string) => {
-    const playVideo = `${serverURL}${url}`;
-    setPreviewVideo(playVideo);
+    // const playVideo = `${serverURL}${url}`;
+
+    let playVideoo;
+    const converToM3u8 = url.includes(".m3u8");
+    console.log({ converToM3u8 });
+    if (converToM3u8) {
+      playVideoo = `${serverURL}${url}`;
+    } else {
+      playVideoo = `${serverURL}/api/videos/stream?filename=${url}`;
+    }
+
+    setPreviewVideo(playVideoo);
   };
 
   const handleDeleteVideo = async (id: string) => {

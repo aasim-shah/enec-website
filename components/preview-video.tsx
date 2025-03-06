@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
+import Video from "next-video";
 
 interface VideoPlayerProps {
   hlsUrl: string;
@@ -20,6 +21,7 @@ export const VideoPlayer = ({ hlsUrl, onClose }: VideoPlayerProps) => {
     if (!video) return;
 
     if (!converToM3u8) {
+      console.log("here" + hlsUrl);
       video.src = hlsUrl;
     } else {
       if (Hls.isSupported()) {
@@ -48,7 +50,7 @@ export const VideoPlayer = ({ hlsUrl, onClose }: VideoPlayerProps) => {
         className="w-[60%] bg-black rounded-lg overflow-hidden shadow-lg relative"
         onClick={(e) => e.stopPropagation()}
       >
-        <video ref={videoRef} controls className="w-full h-auto rounded-lg" />
+        <Video ref={videoRef} controls className="w-full h-auto rounded-lg" />
       </div>
     </div>
   );
